@@ -1,0 +1,1 @@
+{"protocol_type": {"icmp": "0", "tcp": "1", "udp": "2"}, "service": {"0": "service_0", "1": "service_1", "2": "service_2", "3": "service_3", "4": "service_4", "5": "service_5", "6": "service_6"}, "flag": {"0": "flag_0", "1": "flag_1", "2": "flag_2", "3": "flag_3"}}

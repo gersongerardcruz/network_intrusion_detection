@@ -13,7 +13,7 @@ def main():
     client = MlflowClient()
 
     # Load the training data
-    train_data = h2o.import_file('data/processed/train.csv')
+    train_data = h2o.import_file(args.train_data)
 
     # Set the target column name
     target_col = args.target_column
@@ -98,6 +98,7 @@ if __name__ == "__main__":
     parser.add_argument("--experiment_name", type=str, help="Name of the mlflow experiment")
     parser.add_argument("--max_models", type=int, help="Number of max models to train")
     parser.add_argument("--target_column", type=str, help="Name of target column")
+    parser.add_argument("--train_data", help="path to train data file")
     args = parser.parse_args()
 
     main()

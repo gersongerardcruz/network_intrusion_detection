@@ -214,7 +214,7 @@ def get_correlation(df, figsize=(20, 20)):
     plt.show()
 
 
-def normalize_dataframe(df, train_df, train: bool, save_scaler: bool, scaler='standard'):
+def normalize_dataframe(df, train_df, train: bool, save_scaler: bool, save_directory, scaler='standard'):
     """
     Normalize all columns in a pandas dataframe using either StandardScaler or MinMaxScaler.
     
@@ -244,9 +244,9 @@ def normalize_dataframe(df, train_df, train: bool, save_scaler: bool, scaler='st
     # Save the scaler parameters to file
     if save_scaler == True:
         if scaler == 'standard':
-            np.save('standard_scaler_params.npy', [scaler.mean_, scaler.var_])
+            np.save(save_directory, [scaler.mean_, scaler.var_])
         else:
-            np.save('minmax_scaler_params.npy', [scaler.min_, scaler.scale_])
+            np.save(save_directory, [scaler.min_, scaler.scale_])
 
     if train: 
         # Transform the training data
@@ -297,7 +297,11 @@ def encode_df(df, encoder_type, train: bool):
                 else:
                     df_encoded = pd.concat([df_encoded, pd.DataFrame(encoder.fit_transform(df_encoded[[column]]).toarray(), columns=encoder.get_feature_names_out([column]))], axis=1)
                 df_encoded = df_encoded.drop(column, axis=1)
+
+                # Encode the data and save the mapping to a dictionary
                 mappings[column] = dict(zip(range(len(encoder.categories_[0])), encoder.categories_[0]))
+
+                print(f"Successfully performed {encoder_type} encoding for {column} column!")
 
             elif encoder_type == 'ordinal':
                 encoder = OrdinalEncoder()
@@ -311,6 +315,8 @@ def encode_df(df, encoder_type, train: bool):
                 # Encode the data and save the mapping to a dictionary
                 mappings[column] = {label: str(idx) for idx, label in enumerate(encoder.categories_[0])}
 
+                print(f"Successfully performed {encoder_type} encoding for {column} column!")
+
             elif encoder_type == 'label':
                 encoder = LabelEncoder()
                 if train:
@@ -319,8 +325,12 @@ def encode_df(df, encoder_type, train: bool):
                 else:
                     encoders[column] = encoder
                     df_encoded[column] = encoder.fit_transform(df_encoded[column])
+                
+                # Encode the data and save the mapping to a dictionary
                 mappings[column] = dict(zip(encoder.classes_, encoder.transform(encoder.classes_)))
                 mappings[column] = {k: str(v) for k, v in mappings[column].items()}
+
+                print(f"Successfully performed {encoder_type} encoding for {column} column!")
 
             elif encoder_type == 'binary':
                 encoder = ce.BinaryEncoder()
@@ -329,9 +339,13 @@ def encode_df(df, encoder_type, train: bool):
                 else:
                     df_encoded = pd.concat([df_encoded, pd.DataFrame(encoder.fit_transform(df_encoded[[column]]), columns=encoder.get_feature_names_out())], axis=1)
                 df_encoded = df_encoded.drop(column, axis=1)
-                mappings[column] = dict(zip(range(len(encoder.get_feature_names())), encoder.get_feature_names()))
+
+                # Encode the data and save the mapping to a dictionary
+                mappings[column] = dict(zip(range(len(encoder.get_feature_names_out())), encoder.get_feature_names_out()))
+
+                print(f"Successfully performed {encoder_type} encoding for {column} column!")
 
             else:
                 raise ValueError("Encoder type must be one of 'onehot', 'ordinal', 'label', or 'binary'.")
-    
+
     return df_encoded, mappings

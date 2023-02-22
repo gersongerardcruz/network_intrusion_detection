@@ -1,3 +1,4 @@
+import json
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -366,3 +367,25 @@ def remove_id_column(df):
         if col in df.columns:
             return df.drop(columns=[col])
     return df
+
+def match_test_set_types(h2o_test_set, json_path: str):
+    # Load the JSON file
+    with open(json_path) as f:
+        column_types = json.load(f)
+
+    # Match the column types of the test set to the specified types in the JSON file
+    for column_name, column_type in column_types.items():
+        if column_name in h2o_test_set.columns:
+            if column_types[column_name] != h2o_test_set.types[column_name]:
+                if column_type == 'int':
+                    h2o_test_set[column_name] = h2o_test_set[column_name].asfactor()
+                elif column_type == 'real':
+                    h2o_test_set[column_name] = h2o_test_set[column_name].asnumeric()
+                elif column_type == 'enum':
+                    h2o_test_set[column_name] = h2o_test_set[column_name].asfactor()
+                elif column_type == 'str':
+                    h2o_test_set[column_name] = h2o_test_set[column_name].ascharacter()
+        else:
+            print(f"Warning: Column '{column_name}' not found in test set")
+
+    return h2o_test_set

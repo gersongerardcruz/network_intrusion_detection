@@ -1,8 +1,15 @@
 import argparse
 import h2o
 import mlflow
+import sys
+import os
 from mlflow.tracking import MlflowClient
 from h2o.automl import H2OAutoML, get_leaderboard
+
+# Add the src directory to the system path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from utils import *
 
 def main():
 
@@ -13,7 +20,11 @@ def main():
     client = MlflowClient()
 
     # Load the training data
-    train_data = h2o.import_file(args.train_data)
+    train_data = load_data(args.train_data)
+    train_data = remove_id_column(train_data)
+    train_data = h2o.H2OFrame(train_data)
+
+    print(train_data)
 
     # Set the target column name
     target_col = args.target_column
@@ -38,6 +49,9 @@ def main():
 
         # Split the training data into training and validation sets
         train, valid = train_data.split_frame(ratios=[0.8], seed=0)
+
+        print(train)
+        print(valid)
         
         # Train an H2O AutoML model
         automl = H2OAutoML(max_models=max_models, balance_classes=True, seed=0, sort_metric='AUC', verbosity='info')

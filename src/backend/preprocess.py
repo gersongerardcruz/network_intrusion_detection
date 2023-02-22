@@ -59,6 +59,7 @@ def main():
     train_processed = pd.concat([train_label, train_binary, train_num], axis=1).reset_index(drop=True)
 
     train_processed = pd.concat([train_processed, target], axis=1)
+    train_processed = remove_id_column(train_processed)
 
     train_processed.to_csv(args.output_path)
 

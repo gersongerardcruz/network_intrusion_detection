@@ -101,7 +101,7 @@ pip install -r requirements.txt
 The github repository contains both raw and processed data already, however, should you wish to process a new subset of the data, run the command:
 
 ```python
-src/backend/preprocess.py --input_path data/interim/train.csv --output_path data/processed/train.csv --target_column class --label_encoding protocol_type --binary_encoding service flag
+python src/backend/preprocess.py --input_path data/raw/train.csv --output_path data/processed/train.csv --target_column class --label_encoding protocol_type --binary_encoding service flag --train
 ```
 
 where
@@ -111,11 +111,12 @@ where
 - `--target_column`: name of target column
 - `--label_encoding`: list of columns for label encoding
 - `--binary_encoding`: list of columns for binary encoding
+- `--train`: indicates the data is for the train set
 
 To preprocess test sets without any target columns, run the command: 
 
 ```python
-src/backend/preprocess.py --input_path data/interim/train.csv --output_path data/processed/train.csv --target_column class --label_encoding protocol_type --binary_encoding service flag --no-train
+python src/backend/preprocess.py --input_path data/raw/test.csv --output_path data/processed/test.csv --target_column class --label_encoding protocol_type --binary_encoding service flag --no-train
 ```
 
 where 

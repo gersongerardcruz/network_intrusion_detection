@@ -17,6 +17,8 @@ num_root
 num_file_creations
 num_shells
 num_access_files
+num_outbound_cmds
+is_host_login
 is_guest_login
 count
 srv_count

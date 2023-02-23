@@ -2,7 +2,7 @@
 
 ## Project Information
 
-Network intrusion detection is a critical aspect of cybersecurity that helps organizations safeguard their networks and sensitive data from cyber attacks. As more businesses and individuals rely on technology for daily operations and communication, the risk of cyber attacks becomes increasingly prevalent. Malicious actors use various techniques to exploit vulnerabilities in networks and gain unauthorized access to confidential information, which can result in financial loss, legal ramifications, and reputational damage. 
+Network intrusion detection is a critical aspect of cybersecurity that helps organizations safeguard their networks and sensitive data from cyber attacks. As more businesses and individuals rely on technology for daily operations and communication, the risk of cyber attacks becomes increasingly prevalent. Malicious actors use various techniques to exploit vulnerabilities in networks and gain unauthorized access to confidential information, which can result in financial loss and reputational damage. 
 
 Network intrusion detection models serve as a powerful defense mechanism against these threats by monitoring network traffic and identifying potential security breaches. By providing early warning signals of potential attacks, these models allow security teams to take immediate action and prevent or mitigate the impact of a cyber attack. 
 
@@ -112,6 +112,16 @@ where
 - `--label_encoding`: list of columns for label encoding
 - `--binary_encoding`: list of columns for binary encoding
 
+To preprocess test sets without any target columns, run the command: 
+
+```python
+src/backend/preprocess.py --input_path data/interim/train.csv --output_path data/processed/train.csv --target_column class --label_encoding protocol_type --binary_encoding service flag --no-train
+```
+
+where 
+
+- `--no-train` suggests that the data is for the test set, thereby processing without a target column. 
+
 Additional encoding methods such as `onehot-encoding` and `ordinal-encoding` can be added by modifying the code in `preprocess.py`
 
 ### Training
@@ -134,10 +144,15 @@ This command will generate an `mlruns/` folder which contains the experiments, r
 To track your experiments and models, run the command:
 
 ```python
-mlflow ui
+mlflow ui --port 5001
 ```
 
-This will give you a link to your local Mlflow server for tracking experiments and runs. 
+This will give you a link to your local Mlflow server for tracking experiments and runs. The `--port 5001` is done to ensure that the port will be available because `port 5000` is usually used by local deployments. 
+
+The Mlflow ui and a sample run are shown below.
+
+![mlflow](images/mlflow.jpg)
+![runs](images/runs.jpg)
  
 ### Deployment
 
@@ -161,5 +176,30 @@ This will spin up the Streamlit application which will allow the user to upload 
 
 ### Demo
 
-To see how to interact with the Streamlit UI, watch the gif demonstration below. 
+To see how to interact with the Streamlit UI, watch the gif demonstration below. <br>
 
+![demo](images/demo.gif)
+
+## Conclusions
+
+- The trained classification model was able to accurately classify network activity as 'normal' or 'anomalous', which has important business value for organizations that need to secure their networks against potential cyber attacks.
+- AutoML with H2O was used to efficiently explore and select the best classification model, saving significant time and resources compared to manual model selection.
+- Mlflow was used to track and log all the experiment runs, which made it easy to compare and reproduce models across different runs.
+- By using FastAPI and Streamlit together, we can quickly build and deploy a web application for our network intrusion detection model without sacrificing speed, accuracy, or usability.
+    - However, it is important to note that FastAPI and Streamlit may not be the best choice for all machine learning projects. Depending on the requirements and constraints of a given project, other tools and frameworks may be more suitable. Therefore, it is important to carefully evaluate the trade-offs of using FastAPI and Streamlit before committing to this approach.
+
+## Recommendations
+
+- Use a more comprehensive dataset with more metadata about the columns to better understand the nature of the data and improve the accuracy of the model.
+- Evaluate the model's performance over time and update the model regularly to adapt to changing network behaviors and new types of cyber attacks.
+- Package the model and deploy it in real-time via the cloud
+
+## References
+
+- Special thanks to [Kenneth Leung](https://kennethleungty.medium.com/) for his Medium article: https://towardsdatascience.com/end-to-end-automl-train-and-serve-with-h2o-mlflow-fastapi-and-streamlit-5d36eedfe606 
+    - This article introduced me to the concept of AutoML. I learned a lot from it and applied those concepts to this project. I look forward to doing more end-to-end projects with AutoML. 
+- https://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html
+- https://mlflow.org/docs/latest/index.html
+- https://devdocs.io/fastapi/
+- https://docs.streamlit.io/
+- https://www.kaggle.com/datasets/sampadab17/network-intrusion-detection

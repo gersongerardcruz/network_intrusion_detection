@@ -50,8 +50,9 @@ The technical team can generate value from utilizing AutoML and Mlflow in the de
 
 ## Key Project Files
 
-- `data/`: Folder containing all datasets (training, interim, processed). Default: interim and processed folders empty, to be populated by running `preprocessing.py`.
+- `data/`: Folder containing all datasets (training, interim, processed). 
     - `train/`: Folder containing raw data taken from Kaggle
+    - `processed/`: Folder containing for-training data after being preprocessed
 - `notebooks`: Folder containing jupyter notebooks for the project
     - `01_eda.ipynb`: notebook performing eda and interim cleaning of raw data
 - `references/`: Folder containing files for tracking models and features
@@ -67,6 +68,98 @@ The technical team can generate value from utilizing AutoML and Mlflow in the de
     - `frontend/`: Folder containing all files for frontend components (Streamlit UI)
         - `app.py`: Python file for spinning up the Streamlit application for uploading test data, making predictions, and downloading predictions
 
+## Project Instructions
 
-    
+### Setting up
+
+To run the application, first create a virtual environment. I used [miniconda](https://docs.conda.io/en/latest/miniconda.html) as my virtual environment manager and create an environment with the following command: 
+
+```python
+conda create --name network_intrusion python=3.9
+conda activate network_intrusion
+```
+
+The next step is to clone the repository in the virtual environment by running:
+
+```python
+HTTPS: git clone https://github.com/gersongerardcruz/network_intrusion_detection.git
+```
+
+```python
+SSH: git clone git@github.com:gersongerardcruz/network_intrusion_detection.git
+```
+
+Then, move into the repository and install the requirements with:
+
+```python
+cd network_intrusion_detection
+pip install -r requirements.txt
+```
+
+### Preprocessing
+
+The github repository contains both raw and processed data already, however, should you wish to process a new subset of the data, run the command:
+
+```python
+src/backend/preprocess.py --input_path data/interim/train.csv --output_path data/processed/train.csv --target_column class --label_encoding protocol_type --binary_encoding service flag
+```
+
+where
+
+- `--input_path`: path to input file
+- `--output_path`: path to output file
+- `--target_column`: name of target column
+- `--label_encoding`: list of columns for label encoding
+- `--binary_encoding`: list of columns for binary encoding
+
+Additional encoding methods such as `onehot-encoding` and `ordinal-encoding` can be added by modifying the code in `preprocess.py`
+
+### Training
+
+To train the model with H2O AutoML, run the command: 
+
+```python
+python src/backend/train.py --experiment_name network_intrusion --max_models 10 --target_column class --train_data data/processed/train.csv
+```
+
+where 
+
+- `--experiment_name`: name of the experiment to log/create in mlflow
+- `--max_models`: maximum number of models to train
+- `--target_column`: name of target column
+- `--train_data`: path to training data
+
+This command will generate an `mlruns/` folder which contains the experiments, runs, and models created. It will also print out the locations of the `leaderboard.csv` and `best_model`. 
+
+To track your experiments and models, run the command:
+
+```python
+mlflow ui
+```
+
+This will give you a link to your local Mlflow server for tracking experiments and runs. 
  
+### Deployment
+
+To deploy the model and make predictions, open up two terminals. 
+
+In the first terminal, while still being in the `network_intrusion_detection/` directory, run the command:
+
+```python
+uvicorn src.backend.main:app --reload
+```
+
+This will boot up the FastAPI backend which handles prediction. 
+
+In the second terminal, again while still in the `network_intrusion_detection/` directory, run the command:
+
+```python
+streamlit run src/frontend/app.py  
+```
+
+This will spin up the Streamlit application which will allow the user to upload a dataset for prediction, perform prediction using the best trained model, and download the prediction results in the json format. 
+
+### Demo
+
+To see how to interact with the Streamlit UI, watch the gif demonstration below. 
+

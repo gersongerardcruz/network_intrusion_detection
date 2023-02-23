@@ -377,7 +377,9 @@ def match_test_set_types(h2o_test_set, json_path: str):
     for column_name, column_type in column_types.items():
         if column_name in h2o_test_set.columns:
             if column_types[column_name] != h2o_test_set.types[column_name]:
-                if column_type == 'int':
+                if column_type == 'int' and (h2o_test_set.types[column_name] not in ['int', 'str']):
+                    h2o_test_set[column_name] = h2o_test_set[column_name].asnumeric()
+                elif column_type == 'int':
                     h2o_test_set[column_name] = h2o_test_set[column_name].asfactor()
                 elif column_type == 'real':
                     h2o_test_set[column_name] = h2o_test_set[column_name].asnumeric()

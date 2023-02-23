@@ -46,7 +46,7 @@ def app():
 
     # Use st.file_uploader to get a file from the user
     st.caption("Choose file for classification here")
-    file = st.file_uploader('', type=['csv', 'xlsx'], label_visibility='collapsed')
+    file = st.file_uploader('Upload files', type=['csv', 'xlsx'], label_visibility='visible')
 
     # If a file was uploaded
     if file is not None:

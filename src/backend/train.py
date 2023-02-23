@@ -89,7 +89,7 @@ def main():
         cv_summary_uri = mlflow.get_artifact_uri("references/cv_summary.csv")
         best_model_uri = mlflow.get_artifact_uri("h2o_automl_model")
 
-        print(f"The leaderboard is located at: {leaderboard}")
+        print(f"The leaderboard is located at: {leaderboard_uri}")
         print(f"The CV summary is located at: {cv_summary_uri}")
         print(f"The best model is located at: {best_model_uri}")
 

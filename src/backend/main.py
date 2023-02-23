@@ -22,11 +22,11 @@ client = MlflowClient()
 
 # Get the best model in the experiment used for training by first
 # getting all experiments and searching for run with highest auc metric
-experiments = mlflow.search_experiments(view_type=ViewType.ALL)
+experiments = mlflow.search_experiments(view_type=ViewType.ACTIVE_ONLY)
 experiment_ids = [exp.experiment_id for exp in experiments]
 runs_df = mlflow.search_runs(
     experiment_ids=experiment_ids,  # List of experiment IDs to search
-    run_view_type=ViewType.ALL, # View all runs
+    run_view_type=ViewType.ACTIVE_ONLY, # View all runs
     order_by=["metrics.best_model_validation_accuracy DESC"],  # Metrics to sort by and sort order
     max_results=1  # Maximum number of runs to return
 )
@@ -35,8 +35,11 @@ runs_df = mlflow.search_runs(
 run_id = runs_df.iloc[0]["run_id"]
 experiment_id = runs_df.iloc[0]["experiment_id"]
 
+
+
 # Load best model based on experiment and run ids
 best_model = mlflow.h2o.load_model(f"mlruns/{experiment_id}/{run_id}/artifacts/h2o_automl_model/")
+best_model_uri = mlflow.get_artifact_uri(f"mlruns/{experiment_id}/{run_id}/artifacts/h2o_automl_model/")
 
 # Create a FastAPI app
 app = FastAPI()
@@ -57,7 +60,9 @@ async def predict(file: bytes = File(...)):
 
     # Generate predictions using the best model
     preds = best_model.predict(test_df)
+    preds = preds.as_data_frame()['predict']
 
-    print(preds)
+    # Convert predictions to json file
+    final_preds = preds.to_json()
 
-    print("Successful")
+    return final_preds

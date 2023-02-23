@@ -385,7 +385,5 @@ def match_test_set_types(h2o_test_set, json_path: str):
                     h2o_test_set[column_name] = h2o_test_set[column_name].asfactor()
                 elif column_type == 'str':
                     h2o_test_set[column_name] = h2o_test_set[column_name].ascharacter()
-        else:
-            print(f"Warning: Column '{column_name}' not found in test set")
 
     return h2o_test_set

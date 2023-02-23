@@ -79,6 +79,12 @@ conda create --name network_intrusion python=3.9
 conda activate network_intrusion
 ```
 
+Java is also needed for Mlflow so install Java in your environment by running:
+
+```python
+conda install -c conda-forge openjdk
+```
+
 The next step is to clone the repository in the virtual environment by running:
 
 ```python

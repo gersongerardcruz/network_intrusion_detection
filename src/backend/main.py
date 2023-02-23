@@ -7,7 +7,9 @@ import sys
 import os
 from mlflow.tracking import MlflowClient
 from mlflow.entities import ViewType
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File 
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 
 # Add the src directory to the system path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -63,6 +65,5 @@ async def predict(file: bytes = File(...)):
     preds = preds.as_data_frame()['predict']
 
     # Convert predictions to json file
-    final_preds = preds.to_json()
-
-    return final_preds
+    json_compatible_item_data = jsonable_encoder(preds)
+    return JSONResponse(content=json_compatible_item_data)

@@ -18,7 +18,7 @@ Businesses using network intrusion detection models can derive value by having:
 
 ## Technical Value
 
-The technical team can generate value from utilizing AutoML and Mlflow in the development of the network instruction model because of the following. 
+The technical team can generate value from utilizing AutoML and Mlflow in the development of the network instruction model because of the following: 
 
 ### AutoML:
 

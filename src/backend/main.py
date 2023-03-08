@@ -37,8 +37,6 @@ runs_df = mlflow.search_runs(
 run_id = runs_df.iloc[0]["run_id"]
 experiment_id = runs_df.iloc[0]["experiment_id"]
 
-
-
 # Load best model based on experiment and run ids
 best_model = mlflow.h2o.load_model(f"mlruns/{experiment_id}/{run_id}/artifacts/h2o_automl_model/")
 best_model_uri = mlflow.get_artifact_uri(f"mlruns/{experiment_id}/{run_id}/artifacts/h2o_automl_model/")

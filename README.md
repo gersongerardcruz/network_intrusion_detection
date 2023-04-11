@@ -51,7 +51,7 @@ The technical team can generate value from utilizing AutoML and Mlflow in the de
 ## Key Project Files
 
 - `data/`: Folder containing all datasets (training, interim, processed). 
-    - `train/`: Folder containing raw data taken from Kaggle
+    - `raw/`: Folder containing raw data taken from Kaggle
     - `processed/`: Folder containing for-training data after being preprocessed
 - `notebooks`: Folder containing jupyter notebooks for the project
     - `01_eda.ipynb`: notebook performing eda and interim cleaning of raw data
